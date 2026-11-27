@@ -1,0 +1,28 @@
+# Model training and automatic differentiation
+torch==2.8.0
+transformers==4.55.3
+accelerate==1.10.1
+safetensors==0.6.2
+
+# Checkpoints and datasets
+huggingface-hub==0.34.4
+tokenizers==0.21.4
+datasets==4.0.0
+pyarrow==20.0.0
+
+# Mathematics, optimization and statistical analysis
+numpy==2.2.6
+scipy==1.15.3
+sympy==1.14.0
+cvxpy==1.7.2
+scikit-learn==1.7.1
+
+# Data analysis and visualization
+pandas==2.2.3
+matplotlib==3.10.5
+seaborn==0.13.2
+
+# Notebook environment and experiment utilities
+jupyterlab==4.4.6
+ipykernel==6.30.1
+tqdm==4.67.1
