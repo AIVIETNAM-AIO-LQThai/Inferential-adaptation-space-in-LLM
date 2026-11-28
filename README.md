@@ -68,8 +68,8 @@ A single positive scalar contraction preserves the normalized singular-value dis
 AdamW updates a parameter block according to
 
 $$
-W_{t+1}=(1-\eta_t\lambda)W_t-\eta_t A_t,
-\qquad A_t=\frac{\hat m_t}{\sqrt{\hat v_t}+\epsilon_A}.
+W_{t+1}=(1 - \eta_t \lambda)W_t - \eta_t A_t,
+\qquad A_t=\frac{\hat m_t}{\sqrt{\hat v_t} + \epsilon_A}.
 $$
 
 The decay term contracts the weights, while the adaptive term moves them according to the gradient history. Their interaction determines the final parameter magnitude. [Kosson, Messmer and Jaggi (2024)](https://proceedings.mlr.press/v235/kosson24a.html) provide a theoretical connection between weight decay, weight norms and angular updates in normalized networks.
@@ -99,7 +99,7 @@ If high WD simply reduced every relevant parameter magnitude by the same positiv
 Under the idealized Adam scaling relationship, the candidate multiplier for a recipient block is
 
 $$
-a_i=\frac{1}{c_i}=\frac{r_i^{(s)}}{r_i^{(h)}}.
+a_i = \frac{1}{c_i} = \frac{r_i^{(s)}}{r_i^{(h)}}.
 $$
 
 For example, consider four hypothetical scale-invariant blocks:
@@ -149,10 +149,10 @@ We expect the physical transplant and exact emulation to follow equivalent funct
 
 #### 3.1 Component-wise functional contributions
 
-Let $z=f_\theta(X)$ denote the logits on fixed evaluation contexts. For a sufficiently small parameter update $\Delta\theta$, the first-order functional change is
+Let $z = f_\theta(X)$ denote the logits on fixed evaluation contexts. For a sufficiently small parameter update $\Delta\theta$, the first-order functional change is
 
 $$
-\Delta z\approx J_\theta(X)\Delta\theta=\sum_{i=1}^m J_i\Delta W_i.
+\Delta z \approx J_\theta(X) \Delta \theta = \sum_{i=1}^m J_i\Delta W_i.
 $$
 
 Define $d_i=J_i\Delta W_i$ and collect the contributions as columns of $D=[d_1,\ldots,d_m]$. The baseline functional direction is $D\mathbf 1$. If we scale each block's next optimizer update by $a_i$, the first-order direction becomes $Da$.
@@ -164,13 +164,13 @@ Heterogeneous coefficients are not sufficient to guarantee a different functiona
 Raw logit distance can be misleading because adding the same scalar to every vocabulary logit leaves the predictive distribution unchanged. For categorical probabilities $p=\operatorname{softmax}(z)$, define the logit Fisher matrix
 
 $$
-F_z=\operatorname{diag}(p)-pp^\top.
+F_z=\operatorname{diag}(p) - pp^\top.
 $$
 
 For a small logit perturbation $d$, predictive KL has the local approximation
 
 $$
-D_{\mathrm{KL}}(p(z)\Vert p(z+d))\approx\frac12d^\top F_zd.
+D_{\mathrm{KL}}(p(z) \Vert p(z+d)) \approx \frac{1}{2} d^\top F_zd.
 $$
 
 Average the Fisher inner products over fixed, valid teacher-forced token contexts, and write the corresponding block contribution Gram matrix as
@@ -194,16 +194,16 @@ $$
 The irreducible relative functional discrepancy is
 
 $$
-E_F=\sqrt{\frac{(a-k^*\mathbf1)^\top G(a-k^*\mathbf1)}{a^\top Ga}}.
+E_F=\sqrt{\frac{(a-k^*\mathbf{1})^\top G(a-k^*\mathbf{1})}{a^\top Ga}}.
 $$
 
 To investigate which combinations of component-wise changes produce this discrepancy, define the residual Gram matrix
 
 $$
-Q=G-\frac{G\mathbf1\mathbf1^\top G}{\mathbf1^\top G\mathbf1}.
+Q=G-\frac{G\mathbf{1} \space \mathbf{1}^\top G}{\mathbf{1}^\top G\mathbf{1}}.
 $$
 
-For the unconstrained projection, or when its multiplier is nonnegative, let $a=\bar a\mathbf1+\delta$. Since $Q\mathbf1=0$,
+For the unconstrained projection, or when its multiplier is nonnegative, let $a=\bar a\mathbf{1} + \delta$. Since $Q\mathbf{1}=0$,
 
 $$
 E_F^2=\frac{\delta^\top Q\delta}{a^\top Ga}.
@@ -211,14 +211,14 @@ $$
 
 If the unconstrained multiplier is negative, the best nonnegative fit is zero and the relative residual is one. This identity connects heterogeneity in the multiplier profile to the functional sensitivity of the model: a large variation in norms need not produce a large directional change if the variation lies in directions to which $Q$ is insensitive.
 
-Additional diagnostics include the cancellation ratio $\kappa=\mathbf1^\top G\mathbf1/\operatorname{tr}(G)$, the local angular sensitivity $\chi=\sqrt{\lambda_{\max}(Q)/(\mathbf1^\top G\mathbf1)}$, and the eigenmode contributions $\lambda_j(v_j^\top\delta)^2$ for eigenpairs of $Q$. All depend on the chosen block partition, task and optimizer state.
+Additional diagnostics include the cancellation ratio $\kappa = \mathbf{1}^\top G \mathbf{1} / \operatorname{tr}(G)$, the local angular sensitivity $\chi = \sqrt{\lambda_{\max}(Q)/(\mathbf{1}^\top G \mathbf{1})}$, and the eigenmode contributions $\lambda_j(v_j^\top\delta)^2$ for eigenpairs of $Q$. All depend on the chosen block partition, task and optimizer state.
 
 #### 3.4 From global to blockwise compensation
 
 We compare global, eligible-only, two-group, family-level and measured blockwise profiles. In the fitted hierarchy, let $B$ assign parameter blocks to groups of shared multipliers. We solve
 
 $$
-\beta^*=\arg\min_{\beta\geq0}(a-B\beta)^\top G(a-B\beta).
+\beta^* = \arg\min_{\beta \geq 0}(a - B\beta)^\top G(a - B\beta).
 $$
 
 The nested hierarchy necessarily improves the in-sample approximation as the allowed profile becomes more flexible. Its scientific value comes from determining whether the simpler profiles reproduce the measured profile on independent gradient batches and contexts. The blockwise target has zero self-reconstruction error by definition.
@@ -230,17 +230,17 @@ Shuffled profiles preserve the distribution of multipliers while disrupting thei
 A functionally distinct direction is not necessarily a better one. On held-out downstream contexts, let $g_D=\nabla_z L_D$, and define
 
 $$
-b_i=-g_D^\top d_{D,i}.
+b_i = -g_D^\top d_{D,i}.
 $$
 
-Then the predicted first-order loss reduction for profile $a$ is $U_D(a)=b^\top a$. The non-global residual utility is $b^\top(a-k^*\mathbf1)$, which measures the difference relative to the best geometric global projection. This is not necessarily an advantage at matched functional movement.
+Then the predicted first-order loss reduction for profile $a$ is $U_D(a) = b^\top a$. The non-global residual utility is $b^\top(a - k^*\mathbf1)$, which measures the difference relative to the best geometric global projection. This is not necessarily an advantage at matched functional movement.
 
-Define the downstream and retention Grams $G_D=D_D^\top F_DD_D$ and $G_P=D_P^\top F_PD_P$, computed from the same training update evaluated on different context distributions. The local efficiency measures are
+Define the downstream and retention Grams $G_D=D_D^\top F_DD_D$ and $G_P = D_P^\top F_P D_P$, computed from the same training update evaluated on different context distributions. The local efficiency measures are
 
 $$
-\mathcal E_D(a)=\frac{b^\top a}{\sqrt{a^\top G_Da}},
+\mathcal E_D(a) = \frac{b^\top a}{\sqrt{a^\top G_Da}},
 \qquad
-\mathcal E_P(a)=\frac{b^\top a}{\sqrt{a^\top G_Pa}}.
+\mathcal E_P(a) = \frac{b^\top a}{\sqrt{a^\top G_Pa}}.
 $$
 
 These quantities measure local downstream improvement per unit of downstream predictive movement or retention-domain disruption. They are undefined for zero denominators and should not be interpreted as long-horizon plasticity metrics. A larger score is useful only under a meaningful, matched comparison.
@@ -281,8 +281,8 @@ This is a controlled local study with a constant-LR protocol, not an exact repro
 Before interpreting the functional mechanism as an explanation for plasticity, measure native learning curves for L, M and H. Define
 
 $$
-P_s(t)=L_{D,s}(0)-L_{D,s}(t),\qquad
-\Delta_{H,s}(t)=P_H(t)-P_s(t).
+P_s(t) = L_{D,s}(0) - L_{D,s}(t), \qquad
+\Delta_{H,s}(t) = P_H(t) - P_s(t).
 $$
 
 Track both loss improvement and absolute downstream loss, alongside retention changes and the auxiliary GSM8K diagnostic. Compare shared and separately calibrated global LRs. The native contrast establishes the relevance of the mechanism at the selected horizon and calibrates the practical margin for trajectory utility. If the gap is absent or inconclusive, local geometric results remain valid as a separate investigation, but cannot be claimed to explain a native advantage at that horizon.
@@ -320,7 +320,7 @@ We distinguish meaningful differences, approximate equivalence and inconclusive 
 | **IX. Short trajectories**          | Test persistence and bidirectional effects                       | Calibrated profile interventions, stateful Adam geometry, 500-step adaptation/retention curves                |
 | **X. Evidence synthesis**           | Decide which hypotheses survive                                  | Conditional uncertainty intervals, evidence ledger and research decisions                                     |
 
-Section II is intentionally limited. For AdamW, the exact squared-norm recurrence contains the cross term $-2\eta_t(1-\eta_t\lambda)\langle W_t,A_t\rangle_F$, which generally cannot be neglected merely because a block is scale-invariant. Final checkpoints do not identify its historical value. Decay exposure measures attenuation of the initialization term, not its share of the final norm. The optional published-sweep re-evaluation in Section III is disabled until the repository-to-hyperparameter mapping is verified.
+Section II is intentionally limited. For AdamW, the exact squared-norm recurrence contains the cross term $-2\eta_t (1-\eta_t\lambda) \langle W_t,A_t \rangle_F$, which generally cannot be neglected merely because a block is scale-invariant. Final checkpoints do not identify its historical value. Decay exposure measures attenuation of the initialization term, not its share of the final norm. The optional published-sweep re-evaluation in Section III is disabled until the repository-to-hyperparameter mapping is verified.
 
 ### 8. Experimental outputs
 
